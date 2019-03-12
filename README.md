@@ -14,7 +14,7 @@ You can install the package via composer:
 composer require cion/laravel-log-reader
 ```
 
-The package will register itself automatically. 
+The package will register itself automatically.
 
 Optionally, you can publish the package configuration using:
 
@@ -22,8 +22,7 @@ Optionally, you can publish the package configuration using:
 php artisan vendor:publish --provider=Cion\\LaravelLogReader\\ServiceProvider
 ```
 
-This will publish a file called `debug-server.php` in your `config` folder.
-In the config file, you can specify the dump server host that you want to listen on, in case you want to change the default value.
+This will publish a file called `log-reader.php` in your `config` folder to adjust a few config values.
 
 ## Usage
 
