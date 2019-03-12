@@ -13,7 +13,7 @@ class ServiceProvider extends BaseServiceProvider
         $this->loadRoutesFrom(__DIR__.'/routes.php');
 
         $this->publishes([
-            __DIR__.'/config.php' => config_path('logreader.php')
+            __DIR__.'/config.php' => config_path('logreader.php'),
         ], 'config');
     }
 
