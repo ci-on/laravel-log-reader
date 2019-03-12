@@ -69,7 +69,6 @@ class LogReader
         return $this;
     }
 
-
     public function yesterday()
     {
         $this->time = now()->subDay()->format('Y-m-d');

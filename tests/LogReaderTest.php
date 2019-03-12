@@ -2,8 +2,8 @@
 
 namespace Mohamed\LaravelLogReader\Tests;
 
-use Illuminate\Filesystem\Filesystem;
 use PHPUnit\Framework\TestCase;
+use Illuminate\Filesystem\Filesystem;
 
 class LogReaderTest extends TestCase
 {
@@ -27,7 +27,7 @@ class LogReaderTest extends TestCase
         $this->directory = 'logs_'.strtotime(now());
 
         // Create Test Folder
-        $this->filesystem->makeDirectory(__DIR__ . '/'. $this->directory);
+        $this->filesystem->makeDirectory(__DIR__.'/'.$this->directory);
     }
 
     /** @test */
@@ -35,6 +35,6 @@ class LogReaderTest extends TestCase
     {
         $this->assertTrue(true);
 
-        $this->filesystem->deleteDirectory(__DIR__. '/'. $this->directory);
+        $this->filesystem->deleteDirectory(__DIR__.'/'.$this->directory);
     }
 }
