@@ -48,7 +48,7 @@ If you discover any security related issues, please email mohamed@cion.agency in
 
 ## Credits
 
-- [Mohamed Benhinda](https://github.com/simoebenhida)
+- [Mohamed Benhida](https://github.com/simoebenhida)
 
 ## License
 
