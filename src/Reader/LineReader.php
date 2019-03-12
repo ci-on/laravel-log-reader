@@ -5,11 +5,11 @@ namespace Mohamed\LaravelLogReader\Reader;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 
-class LineReader {
-
+class LineReader
+{
     protected $line;
 
-    protected $typeLogger = [
+    protected $types = [
         'DEBUG',
         'EMERGENCY',
         'ALERT',
@@ -26,16 +26,20 @@ class LineReader {
 
     public $message;
 
+    public $env;
+
     public function __construct($line)
     {
         $this->line = $line;
+
+        if(request()->filled('logreader_type') && request('logreader_type') !== 'all') {
+            $this->types = [strtoupper(request()->logreader_type)];
+        }
     }
 
     public function handle()
     {
-        if($this->isLogger() && $this->hasAtLeastOneLoggerType()) {
-            $this->retrieveDate();
-
+        if ($this->isLogger() && $this->hasAtLeastOneLoggerType()) {
             $this->retrieveMessage();
 
             return $this;
@@ -55,7 +59,7 @@ class LineReader {
 
     public function hasAtLeastOneLoggerType()
     {
-        return collect($this->typeLogger)->filter(function($type) {
+        return collect($this->types)->filter(function ($type) {
             if ($this->hasLoggerType($type)) {
                 return true;
             }
@@ -64,16 +68,17 @@ class LineReader {
 
     public function isLogger()
     {
-        return (bool) (strpos($this->line, '['. now()->format('Y-m-d')) !== false);
-    }
-
-    public function retrieveDate()
-    {
         $date = substr($this->line, 0, strpos($this->line, ']'));
         $date = Str::replaceFirst(']', '', $date);
         $date = Str::replaceFirst('[', '', $date);
 
-        $this->date = Carbon::parse($date);
+        try {
+            $this->date = Carbon::parse($date);
+
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     public function LineWithoutDate()
@@ -83,14 +88,13 @@ class LineReader {
 
     public function retrieveMessage()
     {
-        $this->message = Str::replaceFirst($this->type.": ", '', $this->LineWithoutDate());
+        $this->message = Str::replaceFirst(config('logreader.env').'.'.$this->type.": ", '', $this->LineWithoutDate());
     }
 
     public function hasLoggerType($type)
     {
-        // config('logreader.env')
-        if(strpos($this->line, 'local'.'.'.$type) !== false) {
-            $this->type = 'local'.'.'.$type;
+        if (strpos($this->line, config('logreader.env').'.'.$type) !== false) {
+            $this->type = $type;
 
             return true;
         }
