@@ -1,6 +1,6 @@
 <?php
 
-namespace Mohamed\LaravelLogReader\Reader;
+namespace Cion\LaravelLogReader\Reader;
 
 use Illuminate\Routing\Controller;
 

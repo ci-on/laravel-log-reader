@@ -1,6 +1,6 @@
 <?php
 
-namespace Mohamed\LaravelLogReader;
+namespace Cion\LaravelLogReader;
 
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 

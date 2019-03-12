@@ -1,7 +1,7 @@
 <?php
 
-use Mohamed\LaravelLogReader\Reader\LogReader;
+use Cion\LaravelLogReader\Reader\LogReader;
 
 Route::group(['prefix' => config('logreader.prefix')], function () {
-    Route::get('/', 'Mohamed\LaravelLogReader\Reader\LogReaderController@index');
+    Route::get('/', 'Cion\LaravelLogReader\Reader\LogReaderController@index');
 });
