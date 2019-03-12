@@ -5,5 +5,5 @@ return [
 
     'path' => storage_path('logs'),
 
-    'env' => env('APP_ENV')
+    'env' => env('APP_ENV'),
 ];

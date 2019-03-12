@@ -17,7 +17,7 @@ class LineReader
         'ERROR',
         'WARNING',
         'NOTICE',
-        'INFO'
+        'INFO',
     ];
 
     public $type;
@@ -32,7 +32,7 @@ class LineReader
     {
         $this->line = $line;
 
-        if(request()->filled('logreader_type') && request('logreader_type') !== 'all') {
+        if (request()->filled('logreader_type') && request('logreader_type') !== 'all') {
             $this->types = [strtoupper(request()->logreader_type)];
         }
     }
@@ -51,9 +51,9 @@ class LineReader
     public function getArray()
     {
         return [
-            "date" => $this->date,
-            "type" => $this->type,
-            "message" => $this->message
+            'date' => $this->date,
+            'type' => $this->type,
+            'message' => $this->message,
         ];
     }
 
@@ -88,7 +88,7 @@ class LineReader
 
     public function retrieveMessage()
     {
-        $this->message = Str::replaceFirst(config('logreader.env').'.'.$this->type.": ", '', $this->LineWithoutDate());
+        $this->message = Str::replaceFirst(config('logreader.env').'.'.$this->type.': ', '', $this->LineWithoutDate());
     }
 
     public function hasLoggerType($type)
