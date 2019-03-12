@@ -1,5 +1,5 @@
 {
-    "name": "mohamed/laravel-log-reader",
+    "name": "cion/laravel-log-reader",
     "description": "UI Reader for laravel logs",
     "type": "library",
     "license": "MIT",
@@ -14,12 +14,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Mohamed\\LaravelLogReader\\": "src/"
+            "Cion\\LaravelLogReader\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Mohamed\\LaravelLogReader\\Tests\\": "tests"
+            "Cion\\LaravelLogReader\\Tests\\": "tests"
         }
     },
     "require-dev": {
@@ -28,7 +28,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Mohamed\\LaravelLogReader\\ServiceProvider"
+                "Cion\\LaravelLogReader\\ServiceProvider"
             ]
         }
     },
