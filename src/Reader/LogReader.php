@@ -2,11 +2,14 @@
 
 namespace Cion\LaravelLogReader\Reader;
 
+use Cion\LaravelLogReader\Reader\Exception\FolderNotFoundException;
 use Illuminate\Filesystem\Filesystem;
 
 class LogReader
 {
     protected $filesystem;
+
+    protected $files = [];
 
     protected $time;
 
@@ -16,7 +19,7 @@ class LogReader
     {
         $this->filesystem = new Filesystem;
 
-        $this->time = now()->format('Y-m-d');
+        $this->time = now();
     }
 
     public function read()
@@ -42,23 +45,51 @@ class LogReader
         // specify table or model
     }
 
-    public function getFiles()
+    public function get()
     {
         // TODO:Add Expection if this path doesn't exists
+        if (! $this->filesystem->exists(config('logreader.path'))) {
+            throw new FolderNotFoundException();
+            // throw new Exception("File Does Not Exists");
+        }
 
-        return collect($this->filesystem->files(config('logreader.path')))->filter(function ($file) {
-            if (! is_null($this->time)) {
-                return $file->getFilename() === "laravel-{$this->time}.log";
+        return $this->getDiretoryFiles()->getSubDirectoriesFiles()->getFiles();
+    }
+
+    public function getFiles()
+    {
+        return collect($this->files)->filter(function ($file) {
+            if (! is_null($this->getTime())) {
+                // Get only the files that has the current time
+                return $file->getFilename() === "laravel-{$this->getTime()}.log";
             }
 
             return true;
         });
     }
 
+    public function getSubDirectoriesFiles()
+    {
+        collect($this->filesystem->directories(config('logreader.path')))->map(function ($directory) {
+            collect($this->filesystem->files($directory))->filter(function ($file) {
+                $this->files[] = $file;
+            });
+        });
+
+        return $this;
+    }
+
+    public function getDiretoryFiles()
+    {
+        collect($this->filesystem->files(config('logreader.path')))->filter(function ($file) {
+            $this->files[] = $file;
+        });
+
+        return $this;
+    }
+
     public function getFileLines($file)
     {
-        // TODO:Add Expection if this path doesn't exists
-
         return collect(explode("\n", $this->filesystem->get($file->getPathname())));
     }
 
@@ -71,8 +102,17 @@ class LogReader
 
     public function yesterday()
     {
-        $this->time = now()->subDay()->format('Y-m-d');
+        $this->time = now()->yesterday();
 
         return $this;
+    }
+
+    protected function getTime()
+    {
+        if (is_null($this->time)) {
+            return null;
+        }
+
+        return $this->time->format('Y-m-d');
     }
 }

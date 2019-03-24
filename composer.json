@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "laravel/framework": "^5.8"
+        "illuminate/container": "~5.8.0"
     },
     "autoload": {
         "psr-4": {
@@ -23,7 +23,8 @@
         }
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.0"
+        "phpunit/phpunit": "^8.0",
+        "orchestra/testbench": "^3.8"
     },
     "extra": {
         "laravel": {
