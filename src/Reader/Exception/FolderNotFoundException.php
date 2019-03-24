@@ -2,4 +2,6 @@
 
 namespace Cion\LaravelLogReader\Reader\Exception;
 
-class FolderNotFoundException extends \RuntimeException {}
+class FolderNotFoundException extends \RuntimeException
+{
+}

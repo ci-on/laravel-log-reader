@@ -2,9 +2,8 @@
 
 namespace Cion\LaravelLogReader\Tests;
 
-use Cion\LaravelLogReader\Reader\Exception\FolderNotFoundException;
 use Cion\LaravelLogReader\Reader\LogReader;
-use Illuminate\Support\Facades\Storage;
+use Cion\LaravelLogReader\Reader\Exception\FolderNotFoundException;
 
 class LogReaderTest extends TestCase
 {
@@ -18,7 +17,7 @@ class LogReaderTest extends TestCase
     {
         parent::setUp();
 
-        $this->exampleLogLine = "[2019-03-10 20:40:52] local.ERROR: An informational message.";
+        $this->exampleLogLine = '[2019-03-10 20:40:52] local.ERROR: An informational message.';
 
         $this->logReader = new LogReader();
     }
@@ -41,7 +40,7 @@ class LogReaderTest extends TestCase
     {
         $this->createLogFolder(function () {
             foreach (range(0, 4) as $loop) {
-                $this->filesystem->put("{$this->directory}/laravel-".now()->addDays($loop)->format('Y-m-d').".log", $this->exampleLogLine);
+                $this->filesystem->put("{$this->directory}/laravel-".now()->addDays($loop)->format('Y-m-d').'.log', $this->exampleLogLine);
             }
 
             $this->assertCount(5, $this->logReader->all()->get());
@@ -52,7 +51,7 @@ class LogReaderTest extends TestCase
     public function it_can_get_today_log_files()
     {
         $this->createLogFolder(function () {
-            $this->filesystem->put("{$this->directory}/laravel-".now()->format('Y-m-d').".log", $this->exampleLogLine);
+            $this->filesystem->put("{$this->directory}/laravel-".now()->format('Y-m-d').'.log', $this->exampleLogLine);
             $this->assertCount(1, $this->logReader->get());
         });
     }
@@ -61,7 +60,7 @@ class LogReaderTest extends TestCase
     public function it_can_get_yesterday_log_files()
     {
         $this->createLogFolder(function () {
-            $this->filesystem->put("{$this->directory}/laravel-".now()->yesterday()->format('Y-m-d').".log", $this->exampleLogLine);
+            $this->filesystem->put("{$this->directory}/laravel-".now()->yesterday()->format('Y-m-d').'.log', $this->exampleLogLine);
 
             $this->assertCount(1, $this->logReader->yesterday()->get());
         });
@@ -74,13 +73,13 @@ class LogReaderTest extends TestCase
             $this->filesystem->makeDirectory("{$this->directory}/loggers_1");
 
             foreach (range(0, 4) as $loop) {
-                $this->filesystem->put("{$this->directory}/loggers_1/laravel-".now()->addDays($loop)->format('Y-m-d').".log", $this->exampleLogLine);
+                $this->filesystem->put("{$this->directory}/loggers_1/laravel-".now()->addDays($loop)->format('Y-m-d').'.log', $this->exampleLogLine);
             }
 
             $this->filesystem->makeDirectory("{$this->directory}/loggers_2");
 
             foreach (range(0, 4) as $loop) {
-                $this->filesystem->put("{$this->directory}/loggers_2/laravel-".now()->addDays($loop)->format('Y-m-d').".log", $this->exampleLogLine);
+                $this->filesystem->put("{$this->directory}/loggers_2/laravel-".now()->addDays($loop)->format('Y-m-d').'.log', $this->exampleLogLine);
             }
 
             $this->assertCount(10, $this->logReader->all()->get());
@@ -92,7 +91,7 @@ class LogReaderTest extends TestCase
     {
         $this->expectException(FolderNotFoundException::class);
 
-        $this->app['config']->set('logreader.path', "fakeDirectory");
+        $this->app['config']->set('logreader.path', 'fakeDirectory');
 
         $this->assertCount(1, $this->logReader->all()->get());
     }
