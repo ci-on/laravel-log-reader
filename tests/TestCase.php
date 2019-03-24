@@ -2,9 +2,9 @@
 
 namespace Cion\LaravelLogReader\Tests;
 
-use Cion\LaravelLogReader\ServiceProvider as LaravelLogerServiceProvider;
 use Illuminate\Filesystem\Filesystem;
 use Orchestra\Testbench\TestCase as Orchestra;
+use Cion\LaravelLogReader\ServiceProvider as LaravelLogerServiceProvider;
 
 class TestCase extends Orchestra
 {
