@@ -24,7 +24,7 @@ class LogReader
 
     public function read()
     {
-        $this->getFiles()->each(function ($file) {
+        $this->get()->each(function ($file) {
             $this->getFileLines($file)->each(function ($line) {
                 if ($lineHandler = (new LineReader($line))->handle()) {
                     $this->loggers[] = $lineHandler->getArray();
