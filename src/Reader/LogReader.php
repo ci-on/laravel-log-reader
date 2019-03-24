@@ -2,8 +2,8 @@
 
 namespace Cion\LaravelLogReader\Reader;
 
-use Cion\LaravelLogReader\Reader\Exception\FolderNotFoundException;
 use Illuminate\Filesystem\Filesystem;
+use Cion\LaravelLogReader\Reader\Exception\FolderNotFoundException;
 
 class LogReader
 {
@@ -110,7 +110,7 @@ class LogReader
     protected function getTime()
     {
         if (is_null($this->time)) {
-            return null;
+            return;
         }
 
         return $this->time->format('Y-m-d');
