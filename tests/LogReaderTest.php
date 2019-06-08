@@ -22,6 +22,11 @@ class LogReaderTest extends TestCase
         $this->logReader = new LogReader();
     }
 
+    public function tearDown(): void
+    {
+        $this->filesystem->deleteDirectory($this->directory);
+    }
+
     public function createLogFolder($callback)
     {
         $this->directory = __DIR__.'/logs_'.strtotime(now());
@@ -31,8 +36,6 @@ class LogReaderTest extends TestCase
         $this->filesystem->makeDirectory($this->directory);
 
         $callback();
-
-        $this->filesystem->deleteDirectory($this->directory);
     }
 
     /** @test */
