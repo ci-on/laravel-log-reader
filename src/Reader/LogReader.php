@@ -22,7 +22,9 @@ class LogReader
 
     public function read()
     {
-        $this->setTime()->getLogFiles()->each(function ($file) {
+        $this->setTime();
+
+        $this->getLogFiles()->each(function ($file) {
             $this->getFileLines($file)->each(function ($line) {
                 $this->handleFileLine($line);
             });
@@ -34,7 +36,7 @@ class LogReader
     public function handleFileLine($line)
     {
         if ($lineHandler = (new LineReader)->read($line)) {
-            $this->loggers[] = $lineHandler->getArray();
+            $this->loggers[] = $lineHandler->toArray();
         }
     }
 

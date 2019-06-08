@@ -48,7 +48,7 @@ class LineReader
         return false;
     }
 
-    public function getArray()
+    public function toArray()
     {
         return [
             'date' => $this->date,
