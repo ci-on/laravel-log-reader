@@ -4,7 +4,7 @@
 [![Quality Score](https://img.shields.io/scrutinizer/g/ci-on/laravel-log-reader.svg?style=flat-square)](https://scrutinizer-ci.com/g/ci-on/laravel-log-reader)
 [![StyleCI](https://styleci.io/repos/175110511/shield?branch=master)](https://styleci.io/repos/175110511)
 
-Please do not use this in production environments at the moment. This package is still a work in progress.
+<p align="center"><img src="https://github.com/cion/laravel-log-reader/blob/master/demo.png"></p>
 
 ## Installation
 
@@ -43,7 +43,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## Security
 
-If you discover any security related issues, please email mohamed@cion.agency instead of using the issue tracker.
+If you discover any security related issues, please email contact@mohamedbenhida.com instead of using the issue tracker.
 
 ## Credits
 
