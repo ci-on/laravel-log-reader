@@ -131,7 +131,7 @@ class LogReader
     protected function getTime()
     {
         if (is_null($this->time)) {
-            return null;
+            return;
         }
 
         return $this->time->format('Y-m-d');
