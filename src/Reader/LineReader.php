@@ -28,17 +28,17 @@ class LineReader
 
     public $env;
 
-    public function __construct($line)
+    public function __construct()
     {
-        $this->line = $line;
-
         if (request()->filled('logreader_type') && request('logreader_type') !== 'all') {
             $this->types = [strtoupper(request()->logreader_type)];
         }
     }
 
-    public function handle()
+    public function read($line)
     {
+        $this->line = $line;
+
         if ($this->isLogger() && $this->hasAtLeastOneLoggerType()) {
             $this->retrieveMessage();
 
@@ -88,17 +88,22 @@ class LineReader
 
     public function retrieveMessage()
     {
-        $this->message = Str::replaceFirst(config('logreader.env').'.'.$this->type.': ', '', $this->LineWithoutDate());
+        $this->message = Str::replaceFirst($this->getEnv().'.'.$this->type.': ', '', $this->LineWithoutDate());
     }
 
     public function hasLoggerType($type)
     {
-        if (strpos($this->line, config('logreader.env').'.'.$type) !== false) {
+        if (strpos($this->line, $this->getEnv().'.'.$type) !== false) {
             $this->type = $type;
 
             return true;
         }
 
         return false;
+    }
+
+    public function getEnv()
+    {
+        return config('logreader.env', env('APP_ENV'));
     }
 }

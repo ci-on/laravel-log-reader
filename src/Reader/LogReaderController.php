@@ -9,14 +9,7 @@ class LogReaderController extends Controller
     public function index(LogReader $loggers)
     {
         if (request()->filled('logreader_time')) {
-            switch (request()->logreader_time) {
-                case 'yesterday':
-                    $loggers = $loggers->yesterday();
-                    break;
-                case 'all':
-                    $loggers = $loggers->all();
-                    break;
-            }
+            $loggers = $loggers->setTime(request()->logreader_time);
         }
 
         if (request()->wantsJson()) {

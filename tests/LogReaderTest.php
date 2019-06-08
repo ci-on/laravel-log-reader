@@ -43,7 +43,7 @@ class LogReaderTest extends TestCase
                 $this->filesystem->put("{$this->directory}/laravel-".now()->addDays($loop)->format('Y-m-d').'.log', $this->exampleLogLine);
             }
 
-            $this->assertCount(5, $this->logReader->all()->get());
+            $this->assertCount(5, $this->logReader->all()->getLogFiles());
         });
     }
 
@@ -52,7 +52,8 @@ class LogReaderTest extends TestCase
     {
         $this->createLogFolder(function () {
             $this->filesystem->put("{$this->directory}/laravel-".now()->format('Y-m-d').'.log', $this->exampleLogLine);
-            $this->assertCount(1, $this->logReader->get());
+
+            $this->assertCount(1, $this->logReader->getLogFiles());
         });
     }
 
@@ -62,7 +63,7 @@ class LogReaderTest extends TestCase
         $this->createLogFolder(function () {
             $this->filesystem->put("{$this->directory}/laravel-".now()->yesterday()->format('Y-m-d').'.log', $this->exampleLogLine);
 
-            $this->assertCount(1, $this->logReader->yesterday()->get());
+            $this->assertCount(1, $this->logReader->yesterday()->getLogFiles());
         });
     }
 
@@ -82,7 +83,7 @@ class LogReaderTest extends TestCase
                 $this->filesystem->put("{$this->directory}/loggers_2/laravel-".now()->addDays($loop)->format('Y-m-d').'.log', $this->exampleLogLine);
             }
 
-            $this->assertCount(10, $this->logReader->all()->get());
+            $this->assertCount(10, $this->logReader->all()->getLogFiles());
         });
     }
 
@@ -93,6 +94,6 @@ class LogReaderTest extends TestCase
 
         $this->app['config']->set('logreader.path', 'fakeDirectory');
 
-        $this->assertCount(1, $this->logReader->all()->get());
+        $this->assertCount(1, $this->logReader->all()->getLogFiles());
     }
 }

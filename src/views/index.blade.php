@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Laravel Log Reader</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@0.7.4/dist/tailwind.min.css" rel="stylesheet">
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
 </head>
@@ -70,7 +70,7 @@
                 </tr>
             </thead>
             <tbody class="align-baseline">
-                <tr v-if="!loading" v-for="logger in loggers" class="flex w-full">
+                <tr v-else v-if="!loading" v-for="logger in loggers" class="flex w-full">
                     <td class="flex-1 p-4 border-t border-grey-lighter text-sm text-grey-dark whitespace-no-wrap break-words">@{{ new Date(logger['date']).toUTCString() }}</td>
                     <td class="w-1/6 p-4 border-t border-grey-lighter text-sm text-grey-darker whitespace-no-wrap">@{{ logger['type'] }}</td>
                     <td class="w-3/5 flex p-4 border-t border-grey-lighter text-sm text-red-darker break-words leading-normal">
@@ -81,11 +81,16 @@
                 </tr>
             </tbody>
         </table>
+        <div v-if="loggers.length === 0 && ! loading">
+            <h3 class="font-thin text-xl text-center">
+                @{{ message || 'Nothing is Logged !'}}
+            </h3>
+        </div>
+
         <div v-if="loading" class="mt-10 w-full flex items-center justify-center">
-            <svg width="100px" height="100px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="lds-ball" style="background: none;">
-                <circle cx="50" cy="44.5619" r="10" fill="#606f7b">
-                    <animate attributeName="cy" calcMode="spline" values="20;80;20" keyTimes="0;0.5;1" dur="1" keySplines="0.45 0 0.9 0.55;0 0.45 0.55 0.9" begin="0s" repeatCount="indefinite"></animate>
-                </circle>
+            <svg class="lds-gear" width="24px"  height="24px"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" style="background: none;"><g transform="translate(50 50)">
+                <g transform="rotate(209.963)">
+                <animateTransform attributeName="transform" type="rotate" values="0;360" keyTimes="0;1" dur="1s" repeatCount="indefinite"></animateTransform><path d="M37.43995192304605 -6.5 L47.43995192304605 -6.5 L47.43995192304605 6.5 L37.43995192304605 6.5 A38 38 0 0 1 35.67394948182593 13.090810836924174 L35.67394948182593 13.090810836924174 L44.33420351967032 18.090810836924174 L37.83420351967032 29.34914108612188 L29.17394948182593 24.34914108612188 A38 38 0 0 1 24.34914108612188 29.17394948182593 L24.34914108612188 29.17394948182593 L29.34914108612188 37.83420351967032 L18.090810836924184 44.33420351967032 L13.090810836924183 35.67394948182593 A38 38 0 0 1 6.5 37.43995192304605 L6.5 37.43995192304605 L6.500000000000001 47.43995192304605 L-6.499999999999995 47.43995192304606 L-6.499999999999996 37.43995192304606 A38 38 0 0 1 -13.09081083692417 35.67394948182593 L-13.09081083692417 35.67394948182593 L-18.09081083692417 44.33420351967032 L-29.34914108612187 37.834203519670325 L-24.349141086121872 29.173949481825936 A38 38 0 0 1 -29.17394948182592 24.34914108612189 L-29.17394948182592 24.34914108612189 L-37.83420351967031 29.349141086121893 L-44.33420351967031 18.0908108369242 L-35.67394948182592 13.090810836924193 A38 38 0 0 1 -37.43995192304605 6.5000000000000036 L-37.43995192304605 6.5000000000000036 L-47.43995192304605 6.500000000000004 L-47.43995192304606 -6.499999999999993 L-37.43995192304606 -6.499999999999994 A38 38 0 0 1 -35.67394948182593 -13.090810836924167 L-35.67394948182593 -13.090810836924167 L-44.33420351967032 -18.090810836924163 L-37.834203519670325 -29.34914108612187 L-29.173949481825936 -24.34914108612187 A38 38 0 0 1 -24.349141086121893 -29.17394948182592 L-24.349141086121893 -29.17394948182592 L-29.349141086121897 -37.834203519670304 L-18.0908108369242 -44.334203519670304 L-13.090810836924195 -35.67394948182592 A38 38 0 0 1 -6.500000000000005 -37.43995192304605 L-6.500000000000005 -37.43995192304605 L-6.500000000000007 -47.43995192304605 L6.49999999999999 -47.43995192304606 L6.499999999999992 -37.43995192304606 A38 38 0 0 1 13.090810836924149 -35.67394948182594 L13.090810836924149 -35.67394948182594 L18.090810836924142 -44.33420351967033 L29.349141086121847 -37.83420351967034 L24.349141086121854 -29.17394948182595 A38 38 0 0 1 29.17394948182592 -24.349141086121893 L29.17394948182592 -24.349141086121893 L37.834203519670304 -29.349141086121897 L44.334203519670304 -18.0908108369242 L35.67394948182592 -13.090810836924197 A38 38 0 0 1 37.43995192304605 -6.500000000000007 M0 -20A20 20 0 1 0 0 20 A20 20 0 1 0 0 -20" fill="#c2c2c2"></path></g></g>
             </svg>
         </div>
     </div>
@@ -99,7 +104,8 @@
       time: 'today',
       type: 'all',
       loggers: [],
-      loading: true
+      loading: true,
+      message:  null
     },
     mounted () {
       this.getLoggers()
@@ -114,17 +120,24 @@
     },
     methods: {
       async getLoggers () {
+        this.message = null
         this.loading = true
-        await this.sleep(1000)
-        await axios.get('/' + '{{ config("logreader.prefix") }}', {
+
+        await this.sleep(200)
+
+        await axios.get('/' + '{{ config("logreader.prefix", "logreader") }}', {
           params: {
             logreader_time: this.time,
             logreader_type: this.type
           }
         }).then(({data}) => {
-          this.loading = false
           this.loggers = data
+        }).catch(() => {
+            this.loggers = []
+            this.message = 'Something Went Wrong!'
         })
+
+        this.loading = false
       },
       sleep (time) {
         return new Promise(resolve => {

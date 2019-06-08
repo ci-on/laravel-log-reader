@@ -18,26 +18,29 @@ class LogReader
     public function __construct()
     {
         $this->filesystem = new Filesystem;
-
-        $this->time = now();
     }
 
     public function read()
     {
-        $this->get()->each(function ($file) {
+        $this->getLogFiles()->each(function ($file) {
             $this->getFileLines($file)->each(function ($line) {
-                if ($lineHandler = (new LineReader($line))->handle()) {
-                    $this->loggers[] = $lineHandler->getArray();
-                }
+                $this->handleFileLine($line);
             });
         });
 
         return $this;
     }
 
+    public function handleFileLine($line)
+    {
+        if ($lineHandler = (new LineReader)->read($line)) {
+            $this->loggers[] = $lineHandler->getArray();
+        }
+    }
+
     public function toArray()
     {
-        return $this->loggers;
+        return array_reverse($this->loggers);
     }
 
     public function toDatabase()
@@ -45,12 +48,10 @@ class LogReader
         // specify table or model
     }
 
-    public function get()
+    public function getLogFiles()
     {
-        // TODO:Add Expection if this path doesn't exists
-        if (! $this->filesystem->exists(config('logreader.path'))) {
+        if (! $this->filesystem->exists($this->getPath())) {
             throw new FolderNotFoundException();
-            // throw new Exception("File Does Not Exists");
         }
 
         return $this->getDiretoryFiles()->getSubDirectoriesFiles()->getFiles();
@@ -60,7 +61,6 @@ class LogReader
     {
         return collect($this->files)->filter(function ($file) {
             if (! is_null($this->getTime())) {
-                // Get only the files that has the current time
                 return $file->getFilename() === "laravel-{$this->getTime()}.log";
             }
 
@@ -70,7 +70,7 @@ class LogReader
 
     public function getSubDirectoriesFiles()
     {
-        collect($this->filesystem->directories(config('logreader.path')))->map(function ($directory) {
+        collect($this->filesystem->directories($this->getPath()))->map(function ($directory) {
             collect($this->filesystem->files($directory))->filter(function ($file) {
                 $this->files[] = $file;
             });
@@ -81,7 +81,7 @@ class LogReader
 
     public function getDiretoryFiles()
     {
-        collect($this->filesystem->files(config('logreader.path')))->filter(function ($file) {
+        collect($this->filesystem->files($this->getPath()))->filter(function ($file) {
             $this->files[] = $file;
         });
 
@@ -93,9 +93,30 @@ class LogReader
         return collect(explode("\n", $this->filesystem->get($file->getPathname())));
     }
 
+    public function setTime($time)
+    {
+        switch ($time) {
+            case 'yesterday':
+                return $this->yesterday();
+                break;
+            case 'all':
+                return $this->all();
+                break;
+            default:
+                return $this->today();
+        }
+    }
+
     public function all()
     {
         $this->time = null;
+
+        return $this;
+    }
+
+    public function today()
+    {
+        $this->time = now();
 
         return $this;
     }
@@ -110,9 +131,14 @@ class LogReader
     protected function getTime()
     {
         if (is_null($this->time)) {
-            return;
+            return null;
         }
 
         return $this->time->format('Y-m-d');
+    }
+
+    public function getPath()
+    {
+        return config('logreader.path', storage_path('logs'));
     }
 }
