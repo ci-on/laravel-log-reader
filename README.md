@@ -26,7 +26,7 @@ This will publish a file called `log-reader.php` in your `config` folder to adju
 
 ## Usage
 
-wip
+You just need to visit `/logreader` if you didn't change `prefix` in your config
 
 ## Testing
 
