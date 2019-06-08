@@ -4,7 +4,7 @@
 [![Quality Score](https://img.shields.io/scrutinizer/g/ci-on/laravel-log-reader.svg?style=flat-square)](https://scrutinizer-ci.com/g/ci-on/laravel-log-reader)
 [![StyleCI](https://styleci.io/repos/175110511/shield?branch=master)](https://styleci.io/repos/175110511)
 
-<p align="center"><img src="https://github.com/cion/laravel-log-reader/blob/master/demo.png"></p>
+<p align="center"><img src="https://github.com/ci-on/laravel-log-reader/blob/master/demo.png?raw=true"></p>
 
 ## Installation
 
