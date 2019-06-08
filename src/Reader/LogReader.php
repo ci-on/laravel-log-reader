@@ -22,9 +22,7 @@ class LogReader
 
     public function read()
     {
-        $this->setTime();
-
-        $this->getLogFiles()->each(function ($file) {
+        $this->setTime()->getLogFiles()->each(function ($file) {
             $this->getFileLines($file)->each(function ($line) {
                 $this->handleFileLine($line);
             });
@@ -99,13 +97,13 @@ class LogReader
     {
         switch (request()->logreader_time) {
             case 'yesterday':
-                return $this->yesterday();
+                $this->yesterday();
                 break;
             case 'all':
-                return $this->all();
+                $this->all();
                 break;
             default:
-                return $this->today();
+                $this->today();
         }
     }
 
