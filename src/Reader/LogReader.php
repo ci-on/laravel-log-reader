@@ -22,6 +22,8 @@ class LogReader
 
     public function read()
     {
+        $this->setTime();
+
         $this->getLogFiles()->each(function ($file) {
             $this->getFileLines($file)->each(function ($line) {
                 $this->handleFileLine($line);
@@ -93,9 +95,9 @@ class LogReader
         return collect(explode("\n", $this->filesystem->get($file->getPathname())));
     }
 
-    public function setTime($time)
+    public function setTime()
     {
-        switch ($time) {
+        switch (request()->logreader_time) {
             case 'yesterday':
                 return $this->yesterday();
                 break;

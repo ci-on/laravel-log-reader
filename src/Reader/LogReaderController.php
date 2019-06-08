@@ -8,10 +8,6 @@ class LogReaderController extends Controller
 {
     public function index(LogReader $loggers)
     {
-        if (request()->filled('logreader_time')) {
-            $loggers = $loggers->setTime(request()->logreader_time);
-        }
-
         if (request()->wantsJson()) {
             return response()->json($loggers->read()->toArray());
         }
