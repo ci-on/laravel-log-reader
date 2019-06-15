@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace Cion\LaravelLogReader\Reader;
 
@@ -35,7 +36,7 @@ class LogSectionReader
         $this->extra = collect($section['extra']);
     }
 
-    public function read() : LogSectionReader
+    public function read() : self
     {
         $this->retrieveSectionInformations();
 
@@ -100,7 +101,7 @@ class LogSectionReader
             'date' => $this->date,
             'type' => $this->type,
             'message' => $this->message,
-            'extra' => $this->extra->toArray()
+            'extra' => $this->extra->toArray(),
         ];
     }
 }
