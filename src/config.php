@@ -7,5 +7,5 @@ return [
 
     'env' => env('APP_ENV'),
 
-    'middleware' => 'auth'
+    'middleware' => 'auth',
 ];

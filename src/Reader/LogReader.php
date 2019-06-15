@@ -1,12 +1,13 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace Cion\LaravelLogReader\Reader;
 
-use Cion\LaravelLogReader\Reader\Exception\FolderNotFoundException;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
+use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Finder\SplFileInfo;
+use Cion\LaravelLogReader\Reader\Exception\FolderNotFoundException;
 
 class LogReader
 {
@@ -23,7 +24,7 @@ class LogReader
         $this->filesystem = new Filesystem;
     }
 
-    public function read() : LogReader
+    public function read() : self
     {
         $this->setTime();
 
@@ -75,7 +76,7 @@ class LogReader
         });
     }
 
-    public function getSubDirectoriesFiles() : LogReader
+    public function getSubDirectoriesFiles() : self
     {
         collect($this->filesystem->directories($this->getPath()))->map(function ($directory) {
             collect($this->filesystem->files($directory))->filter(function ($file) {
@@ -86,7 +87,7 @@ class LogReader
         return $this;
     }
 
-    public function getDiretoryFiles() : LogReader
+    public function getDiretoryFiles() : self
     {
         collect($this->filesystem->files($this->getPath()))->filter(function ($file) {
             $this->files[] = $file;
@@ -114,21 +115,21 @@ class LogReader
         }
     }
 
-    public function all() : LogReader
+    public function all() : self
     {
         $this->time = null;
 
         return $this;
     }
 
-    public function today() : LogReader
+    public function today() : self
     {
         $this->time = now();
 
         return $this;
     }
 
-    public function yesterday() : LogReader
+    public function yesterday() : self
     {
         $this->time = now()->yesterday();
 
@@ -162,7 +163,7 @@ class LogReader
             if ((new LineHelper($line))->hasDate()) {
                 $sections->push([
                     'line' => $line,
-                    'extra' => []
+                    'extra' => [],
                 ]);
             } else {
                 $sections = $this->addToLastSection($sections, $line);
@@ -174,7 +175,7 @@ class LogReader
 
     public function addToLastSection(Collection $sections, string $line)
     {
-        $size = sizeof($sections);
+        $size = count($sections);
 
         return $sections->map(function ($value, $key) use ($size, $line) {
             if ($size - 1 === $key) {

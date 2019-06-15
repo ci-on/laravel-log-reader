@@ -1,13 +1,13 @@
 <?php
+
 namespace Cion\LaravelLogReader\Tests;
 
-use Cion\LaravelLogReader\Reader\LogSectionReader;
-use Cion\LaravelLogReader\Reader\LogReader;
 use Illuminate\Filesystem\Filesystem;
+use Cion\LaravelLogReader\Reader\LogReader;
 
 class LogReaderSectionTest extends TestCase
 {
-    const PATH = __DIR__.'/log/laravel.log' ;
+    const PATH = __DIR__.'/log/laravel.log';
 
     protected $filesystem;
 
