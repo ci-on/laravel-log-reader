@@ -63,24 +63,53 @@
         <table class="mb-20 w-full flex flex-col w-full text-left table-collapse bg-white rounded-b-lg shadow">
             <thead class="flex w-full">
                 <tr class="flex w-full">
-                    <th class="flex-1 text-sm font-medium text-grey-lighter p-3 bg-grey-darker rounded-tl-lg">Date</th>
-                    {{-- <th class="text-sm font-medium text-grey-lighter p-3 bg-grey-darker">ENV</th> --}}
-                    <th class="w-1/6 text-sm font-medium text-grey-lighter p-3 bg-grey-darker">Type</th>
-                    <th class="w-3/5 lex text-sm font-medium text-grey-lighter p-3 bg-grey-darker rounded-tr-lg">Message</th>
+                    <th class="flex-1 text-sm text-grey-lighter py-4 px-3 bg-grey-darker rounded-tl-lg">DATE</th>
+                    <th class="w-1/6 text-sm text-grey-lighter py-4 px-3 bg-grey-darker">TYPE</th>
+                    <th class="w-3/5 lex text-sm text-grey-lighter py-4 px-3 bg-grey-darker rounded-tr-lg">MESSAGE</th>
                 </tr>
             </thead>
             <tbody class="align-baseline">
-                <tr v-else v-if="!loading" v-for="logger in loggers" class="flex w-full">
-                    <td class="flex-1 p-4 border-t border-grey-lighter text-sm text-grey-dark whitespace-no-wrap break-words">@{{ new Date(logger['date']).toUTCString() }}</td>
-                    <td class="w-1/6 p-4 border-t border-grey-lighter text-sm text-grey-darker whitespace-no-wrap">@{{ logger['type'] }}</td>
-                    <td class="w-3/5 flex p-4 border-t border-grey-lighter text-sm text-red-darker break-words leading-normal">
+                <tr v-if="!loading" v-for="logger in loggers" class="flex w-full">
+                    <td class="flex-1 p-4 border-t border-grey-light text-sm text-grey-darkest whitespace-no-wrap break-words">@{{ new Date(logger['date']).toUTCString() }}</td>
+                    <td class="w-1/6 p-4 border-t border-grey-light text-sm text-grey-darkest whitespace-no-wrap">@{{ logger['type'] }}</td>
+                    <td class="w-3/5 flex p-4 border-t border-grey-light text-sm text-red-darker break-words leading-normal relative">
                         <div class="w-full overflow-wrap">
-                            @{{ logger['message'] }}
+                            <div>
+                                @{{ logger['message'] }}
+                            </div>
+                            <div v-if="logger.extra.length" class="absdolute w-full pin-b pin-r flex justify-end">
+                                <button @click="showModal(logger)" class="appearance-none text-blue-light text-xs hover:underline">More Info</button>
+                            </div>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
+
+        <div v-if="modal" class="fixed pin z-50 overflow-auto flex" style="background-color: rgba(0, 0, 0, 0.4);">
+            <div class="relative p-8 bg-white w-full max-w-lg m-auto flex-col flex rounded border shadow" style="height: 32rem;">
+                <span class="absolute pin-t pin-b pin-r p-4">
+                    <svg @click="closeModal()" class="h-3 w-3 fill-current text-grey hover:text-grey-darkest" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+                </span>
+                <table v-if="currentLogger" class="flex flex-col h-auto overflow-auto w-full text-left table-fixed table-collapse bg-white rounded-b-lg">
+                    <tbody class="align-baseline">
+                        <tr v-if="!loading" v-for="extra in currentLogger.extra" class="flex">
+                            <td class="w-1/2 break-words text-grey-darker border-t border-grey-light p-3 text-sm">
+                                <div>
+                                    @{{ extra[0] }}
+                                </div>
+                            </td>
+                            <td class="w-1/2 break-words text-red-darker  border-t border-grey-light p-3 text-sm">
+                                <div>
+                                    @{{ extra[1] }}
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <div v-if="loggers.length === 0 && ! loading">
             <h3 class="font-thin text-xl text-center">
                 @{{ message || 'Nothing is Logged !'}}
@@ -105,7 +134,9 @@
       type: 'all',
       loggers: [],
       loading: true,
-      message:  null
+      message:  null,
+      currentLogger: null,
+      modal: false
     },
     mounted () {
       this.getLoggers()
@@ -139,6 +170,19 @@
 
         this.loading = false
       },
+
+      showModal (logger) {
+        this.currentLogger = logger
+
+        this.modal = true
+      },
+
+      closeModal () {
+        this.modal = false
+
+        this.currentLogger = null;
+      },
+
       sleep (time) {
         return new Promise(resolve => {
           setTimeout(() => {

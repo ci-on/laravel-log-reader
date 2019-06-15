@@ -1,9 +1,12 @@
 <?php
+declare(strict_types = 1);
 
 namespace Cion\LaravelLogReader\Reader;
 
-use Illuminate\Filesystem\Filesystem;
 use Cion\LaravelLogReader\Reader\Exception\FolderNotFoundException;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Collection;
+use Symfony\Component\Finder\SplFileInfo;
 
 class LogReader
 {
@@ -20,12 +23,12 @@ class LogReader
         $this->filesystem = new Filesystem;
     }
 
-    public function read()
+    public function read() : LogReader
     {
         $this->setTime();
 
         $this->getLogFiles()->each(function ($file) {
-            $this->getFileLines($file)->each(function ($line) {
+            $this->getFileLogSections($file)->each(function ($line) {
                 $this->handleFileLine($line);
             });
         });
@@ -33,14 +36,16 @@ class LogReader
         return $this;
     }
 
-    public function handleFileLine($line)
+    public function handleFileLine(array $section) : void
     {
-        if ($lineHandler = (new LineReader)->read($line)) {
-            $this->loggers[] = $lineHandler->toArray();
+        $sectionReader = (new LogSectionReader($section))->read();
+
+        if (! empty($sectionReader->toArray())) {
+            $this->loggers[] = $sectionReader->toArray();
         }
     }
 
-    public function toArray()
+    public function toArray() : array
     {
         return array_reverse($this->loggers);
     }
@@ -50,7 +55,7 @@ class LogReader
         // specify table or model
     }
 
-    public function getLogFiles()
+    public function getLogFiles() : Collection
     {
         if (! $this->filesystem->exists($this->getPath())) {
             throw new FolderNotFoundException();
@@ -59,10 +64,10 @@ class LogReader
         return $this->getDiretoryFiles()->getSubDirectoriesFiles()->getFiles();
     }
 
-    public function getFiles()
+    public function getFiles() : Collection
     {
         return collect($this->files)->filter(function ($file) {
-            if (! is_null($this->getTime())) {
+            if ($this->hasTime()) {
                 return $file->getFilename() === "laravel-{$this->getTime()}.log";
             }
 
@@ -70,7 +75,7 @@ class LogReader
         });
     }
 
-    public function getSubDirectoriesFiles()
+    public function getSubDirectoriesFiles() : LogReader
     {
         collect($this->filesystem->directories($this->getPath()))->map(function ($directory) {
             collect($this->filesystem->files($directory))->filter(function ($file) {
@@ -81,7 +86,7 @@ class LogReader
         return $this;
     }
 
-    public function getDiretoryFiles()
+    public function getDiretoryFiles() : LogReader
     {
         collect($this->filesystem->files($this->getPath()))->filter(function ($file) {
             $this->files[] = $file;
@@ -90,12 +95,12 @@ class LogReader
         return $this;
     }
 
-    public function getFileLines($file)
+    public function getFileLogSections(SplFileInfo $file)
     {
-        return collect(explode("\n", $this->filesystem->get($file->getPathname())));
+        return $this->retrieveSections($this->filesystem->get($file->getPathname()));
     }
 
-    public function setTime()
+    public function setTime() : void
     {
         switch (request()->logreader_time) {
             case 'yesterday':
@@ -109,38 +114,74 @@ class LogReader
         }
     }
 
-    public function all()
+    public function all() : LogReader
     {
         $this->time = null;
 
         return $this;
     }
 
-    public function today()
+    public function today() : LogReader
     {
         $this->time = now();
 
         return $this;
     }
 
-    public function yesterday()
+    public function yesterday() : LogReader
     {
         $this->time = now()->yesterday();
 
         return $this;
     }
 
-    protected function getTime()
+    public function hasTime() : bool
     {
         if (is_null($this->time)) {
-            return;
+            return false;
         }
 
+        return true;
+    }
+
+    protected function getTime() : string
+    {
         return $this->time->format('Y-m-d');
     }
 
-    public function getPath()
+    public function getPath() : string
     {
         return config('logreader.path', storage_path('logs'));
+    }
+
+    public function retrieveSections(string $content) : Collection
+    {
+        $sections = collect();
+
+        collect(explode("\n", $content))->each(function ($line) use (&$sections) {
+            if ((new LineHelper($line))->hasDate()) {
+                $sections->push([
+                    'line' => $line,
+                    'extra' => []
+                ]);
+            } else {
+                $sections = $this->addToLastSection($sections, $line);
+            }
+        });
+
+        return $sections;
+    }
+
+    public function addToLastSection(Collection $sections, string $line)
+    {
+        $size = sizeof($sections);
+
+        return $sections->map(function ($value, $key) use ($size, $line) {
+            if ($size - 1 === $key) {
+                $value['extra'][] = $line;
+            }
+
+            return $value;
+        });
     }
 }
